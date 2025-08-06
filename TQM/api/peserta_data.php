@@ -109,7 +109,7 @@ function handleGet($db) {
         // Get data
         // Di function handleGet untuk get data list
         // Di function handleGet untuk single peserta
-        $query = "SELECT id, tanggal, npk, name as nama, title, grade, section, training_gc, batch, 
+        $query = "SELECT id, npk, name as nama, title, grade, section, training_gc, batch, 
                 pre_test, post_test, seven_tools as tools_7, jigsaw, yaotoshi, 
                 status, created_at, updated_at 
          FROM peserta_data $whereClause ORDER BY created_at DESC LIMIT :limit OFFSET :offset";

@@ -609,7 +609,7 @@ function importFromExcel() {
     importBtn.textContent = 'Mengimpor...';
     importBtn.disabled = true;
     
-    fetch('api/mp_excel.php', {
+    fetch('api/mp_excel.php?action=import', {
         method: 'POST',
         body: formData
     })
