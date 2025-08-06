@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen MP - TQM System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/topbar.css">
+    <link rel="stylesheet" href="css/mp_management.css">
+</head>
+<body>
+    <div class="mp-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-users me-2"></i>Master Data Karyawan</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline-light" onclick="location.href='dashboard.html'">
+                        <i class="fas fa-home me-1"></i>Dashboard
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='peserta_management.html'">
+                        <i class="fas fa-user-graduate me-1"></i>Data Peserta
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='reports.html'">
+                        <i class="fas fa-chart-bar me-1"></i>Laporan
+                    </button>
+                    <div class="user-info">
+                        <span id="userName">Loading...</span>
+                        <button id="logoutBtn" class="btn btn-outline-light">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Controls -->
+            <!-- Di bagian controls, setelah tombol "Tambah MP" -->
+            <div class="controls">
+                <div class="left-controls">
+                    <button class="btn btn-primary" onclick="openMpModal()">Tambah MP</button>
+                    <button class="btn btn-success" onclick="exportToExcel()">📊 Export Excel</button>
+                    <button class="btn btn-info" onclick="openImportModal()">📁 Import Excel</button>
+                </div>
+                <div class="search-filter">
+                    <input type="text" id="searchInput" placeholder="Cari NPK atau Nama..." class="search-input">
+                    <div class="filters">
+                        <select id="sectionFilter" class="filter-select">
+                            <option value="">Semua Section</option>
+                            <!-- Options akan diisi oleh JavaScript -->
+                        </select>
+                        <select id="gradeFilter" class="filter-select">
+                            <option value="">Semua Grade</option>
+                            <!-- Options akan diisi oleh JavaScript -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MP Table -->
+            <!-- Tambahkan kontrol pagination di atas tabel -->
+            <div class="table-controls">
+                <div class="entries-control">
+                    <label for="entriesPerPage">Tampilkan:</label>
+                    <select id="entriesPerPage" onchange="changeEntriesPerPage()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>entri per halaman</span>
+                </div>
+            </div>
+
+            <!-- MP Table dengan sorting -->
+            <div class="table-container">
+                <table id="mpTable" class="data-table sortable">
+                    <thead>
+                        <tr>
+                            <th class="sortable-header" data-sort="npk">NPK <span class="sort-icon">↕</span></th>
+                            <th class="sortable-header" data-sort="name">Nama <span class="sort-icon">↕</span></th>
+                            <th class="sortable-header" data-sort="title">Title <span class="sort-icon">↕</span></th>
+                            <th class="sortable-header" data-sort="grade">Grade <span class="sort-icon">↕</span></th>
+                            <th class="sortable-header" data-sort="section">Section <span class="sort-icon">↕</span></th>
+                            <th class="sortable-header" data-sort="training_gc">Training GC <span class="sort-icon">↕</span></th>
+                            <th class="sortable-header" data-sort="batch">Batch <span class="sort-icon">↕</span></th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mpTableBody">
+                        <tr>
+                            <td colspan="8" class="loading">Memuat data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Enhanced Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info" id="paginationInfo">
+                    <!-- Info akan diisi oleh JavaScript -->
+                </div>
+                <div class="pagination" id="pagination">
+                    <!-- Pagination akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit MP Modal -->
+    <div id="mpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Tambah MP</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="mpForm">
+                <div class="form-group">
+                    <label for="npk">NPK *</label>
+                    <input type="text" id="npk" name="npk" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nama *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title *</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="grade">Grade *</label>
+                    <select id="grade" name="grade" required>
+                        <option value="">Pilih Grade</option>
+                        <option value="A">Grade A</option>
+                        <option value="B">Grade B</option>
+                        <option value="C">Grade C</option>
+                        <option value="D">Grade D</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="section">Section *</label>
+                    <select id="section" name="section" required>
+                        <option value="">Pilih Section</option>
+                        <option value="Production">Production</option>
+                        <option value="Quality">Quality</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="HR">HR</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="training_gc">Training GC</label>
+                    <select id="training_gc" name="training_gc">
+                        <option value="Belum">Belum</option>
+                        <option value="Sudah">Sudah</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="batch">Batch</label>
+                    <input type="text" id="batch" name="batch" placeholder="Contoh: Batch 1">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Konfirmasi Hapus</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus data MP ini?</p>
+                <p><strong id="deleteItemName"></strong></p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Batal</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/mp_management.js"></script>
+</body>
+</html>
+
+<!-- Modal Import Excel - tambahkan sebelum closing body -->
+<!-- Modal Import Excel -->
+<div id="importModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Import Data MP</h2>
+            <span class="close" onclick="closeImportModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>File Excel/CSV:</label>
+                <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" class="form-control">
+                <small class="form-text">
+                    <strong>Format yang didukung:</strong><br>
+                    • .csv (Paling direkomendasikan)<br>
+                    • .xlsx (Excel 2007+)<br>
+                    • .xls (Excel lama - terbatas)<br><br>
+                    <strong>Kolom:</strong> NPK, Nama, Title, Grade, Section, Training GC, Batch<br><br>
+                    <strong>Batasan:</strong><br>
+                    • NPK: maksimal 20 karakter<br>
+                    • Nama: maksimal 100 karakter<br>
+                    • Title: maksimal 100 karakter<br>
+                    • Grade: maksimal 10 karakter (gunakan A, B, C, atau D)<br>
+                    • Section: maksimal 50 karakter<br>
+                    • Training GC: "Sudah" atau "Belum"<br>
+                    • Batch: maksimal 20 karakter<br><br>
+                    <strong>Tips:</strong> Jika file .xls tidak terbaca, silakan "Save As" ke format .xlsx atau .csv dari Excel
+                </small>
+            </div>
+            <div class="form-group">
+                <a href="#" onclick="downloadTemplate()" class="btn btn-outline-secondary">📄 Download Template CSV</a>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Batal</button>
+            <button type="button" class="btn btn-primary" onclick="importFromExcel()">Import</button>
+        </div>
+    </div>
+</div>

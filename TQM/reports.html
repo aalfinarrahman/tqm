@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TQM Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/topbar.css">
+    <link rel="stylesheet" href="css/reports.css">
+    <link rel="stylesheet" href="css/header.css">
+</head>
+<body>
+    <div class="reports-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-bar me-2"></i>TQM Reports</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline-light" onclick="location.href='dashboard.html'">
+                        <i class="fas fa-home me-1"></i>Dashboard
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='mp_management.html'">
+                        <i class="fas fa-users me-1"></i>Manajemen MP
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='peserta_management.html'">
+                        <i class="fas fa-user-graduate me-1"></i>Data Peserta
+                    </button>
+                    <div class="user-info">
+                        <span id="userName">Loading...</span>
+                        <button id="logoutBtn" class="btn btn-outline-light">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Filter Section -->
+            <section class="filter-section">
+                <div class="filter-card">
+                    <h3><i class="fas fa-filter me-2"></i>Filter Laporan</h3>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Jenis Laporan</label>
+                            <select class="form-select" id="reportType">
+                                <option value="all">Semua Laporan</option>
+                                <option value="mp">Laporan MP</option>
+                                <option value="peserta">Laporan Peserta</option>
+                                <option value="training">Laporan Training</option>
+                                <option value="performance">Laporan Performa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Periode</label>
+                            <select class="form-select" id="period">
+                                <option value="today">Hari Ini</option>
+                                <option value="week">Minggu Ini</option>
+                                <option value="month">Bulan Ini</option>
+                                <option value="quarter">Kuartal Ini</option>
+                                <option value="year">Tahun Ini</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Dari Tanggal</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Sampai Tanggal</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button class="btn btn-primary w-100" id="generateReport">
+                                <i class="fas fa-search me-1"></i>Generate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Grid -->
+            <section class="reports-section">
+                <h2><i class="fas fa-chart-line me-2"></i>Laporan Tersedia</h2>
+                <div class="reports-grid">
+                    <!-- MP Report Card -->
+                    <div class="report-card" data-type="mp">
+                        <div class="report-header">
+                            <div class="report-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Laporan MP</h4>
+                        </div>
+                        <div class="report-content">
+                            <p>Laporan lengkap data Manpower termasuk status, departemen, dan performa.</p>
+                            <div class="report-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    <span id="totalMPCount">0</span> Total MP
+                                </span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewReport('mp')">
+                                <i class="fas fa-eye me-1"></i>Lihat
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="downloadReport('mp')">
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Peserta Report Card -->
+                    <div class="report-card" data-type="peserta">
+                        <div class="report-header">
+                            <div class="report-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h4>Laporan Peserta</h4>
+                        </div>
+                        <div class="report-content">
+                            <p>Laporan data peserta training termasuk hasil evaluasi dan sertifikasi.</p>
+                            <div class="report-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <span id="totalPesertaCount">0</span> Total Peserta
+                                </span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewReport('peserta')">
+                                <i class="fas fa-eye me-1"></i>Lihat
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="downloadReport('peserta')">
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Training Report Card -->
+                    <div class="report-card" data-type="training">
+                        <div class="report-header">
+                            <div class="report-icon">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h4>Laporan Training</h4>
+                        </div>
+                        <div class="report-content">
+                            <p>Laporan aktivitas training, jadwal, dan tingkat kehadiran peserta.</p>
+                            <div class="report-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span id="totalTrainingCount">0</span> Total Training
+                                </span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewReport('training')">
+                                <i class="fas fa-eye me-1"></i>Lihat
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="downloadReport('training')">
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Performance Report Card -->
+                    <div class="report-card" data-type="performance">
+                        <div class="report-header">
+                            <div class="report-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <h4>Laporan Performa</h4>
+                        </div>
+                        <div class="report-content">
+                            <p>Analisis performa sistem TQM dan efektivitas program training.</p>
+                            <div class="report-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-percentage"></i>
+                                    <span id="successRate">0</span>% Success Rate
+                                </span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewReport('performance')">
+                                <i class="fas fa-eye me-1"></i>Lihat
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="downloadReport('performance')">
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Report Preview Section -->
+            <section class="preview-section" id="previewSection" style="display: none;">
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <h3 id="previewTitle">Preview Laporan</h3>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="closePreview()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="preview-content" id="previewContent">
+                        <!-- Report content will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/reports.js"></script>
+</body>
+</html>

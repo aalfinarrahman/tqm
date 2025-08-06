@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Management - TQM System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/topbar.css">
+    <link rel="stylesheet" href="css/schedule.css">
+</head>
+<body>
+    <div class="schedule-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-calendar-alt me-2"></i>Schedule Management</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline-light" onclick="location.href='dashboard.html'">
+                        <i class="fas fa-home me-1"></i>Dashboard
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='mp_management.html'">
+                        <i class="fas fa-users me-1"></i>Data MP
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='peserta_management.html'">
+                        <i class="fas fa-user-graduate me-1"></i>Data Peserta
+                    </button>
+                    <button class="btn btn-outline-light" onclick="location.href='reports.html'">
+                        <i class="fas fa-chart-bar me-1"></i>Laporan
+                    </button>
+                    <div class="user-info">
+                        <span id="userName">Loading...</span>
+                        <button id="logoutBtn" class="btn btn-outline-light">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Schedule Controls -->
+            <div class="schedule-controls">
+                <div class="left-controls">
+                    <button class="btn btn-primary" onclick="openScheduleModal()">
+                        <i class="fas fa-plus me-1"></i>Tambah Jadwal
+                    </button>
+                    <button class="btn btn-success" onclick="exportSchedule()">
+                        <i class="fas fa-file-excel me-1"></i>Export Excel
+                    </button>
+                    <button class="btn btn-info" onclick="openBatchModal()">
+                        <i class="fas fa-layer-group me-1"></i>Kelola Batch
+                    </button>
+                </div>
+                <div class="right-controls">
+                    <div class="view-toggle">
+                        <button class="btn btn-outline-secondary active" onclick="switchView('calendar')">
+                            <i class="fas fa-calendar me-1"></i>Kalender
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="switchView('list')">
+                            <i class="fas fa-list me-1"></i>List
+                        </button>
+                    </div>
+                    <div class="filters">
+                        <select id="monthFilter" class="filter-select" onchange="filterSchedule()">
+                            <option value="">Semua Bulan</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select id="typeFilter" class="filter-select" onchange="filterSchedule()">
+                            <option value="">Semua Jenis</option>
+                            <option value="pre_test">Pre Test</option>
+                            <option value="post_test">Post Test</option>
+                            <option value="seven_tools">7 Tools</option>
+                            <option value="jigsaw">Jigsaw</option>
+                            <option value="yaotoshi">Yaotoshi</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div id="calendarView" class="view-container active">
+                <div class="calendar-header">
+                    <button class="btn btn-outline-primary" onclick="previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="currentMonth">Loading...</h3>
+                    <button class="btn btn-outline-primary" onclick="nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar akan diisi oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- List View -->
+            <div id="listView" class="view-container">
+                <div class="table-container">
+                    <table class="data-table" id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Waktu</th>
+                                <th>Jenis Training</th>
+                                <th>Batch</th>
+                                <th>Ruangan</th>
+                                <th>Trainer</th>
+                                <th>Peserta</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            <tr>
+                                <td colspan="9" class="loading">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Upcoming Schedule Widget -->
+            <div class="upcoming-schedule">
+                <h4><i class="fas fa-clock me-2"></i>Jadwal Hari Ini</h4>
+                <div id="todaySchedule" class="schedule-cards">
+                    <!-- Cards akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Schedule Modal -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="scheduleModalTitle">Tambah Jadwal</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="scheduleForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="trainingType">Jenis Training *</label>
+                        <select id="trainingType" name="training_type" required>
+                            <option value="">Pilih Jenis Training</option>
+                            <option value="pre_test">Pre Test</option>
+                            <option value="post_test">Post Test</option>
+                            <option value="seven_tools">7 Tools</option>
+                            <option value="jigsaw">Jigsaw</option>
+                            <option value="yaotoshi">Yaotoshi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="batchName">Nama Batch *</label>
+                        <input type="text" id="batchName" name="batch_name" required placeholder="Contoh: Batch 1 - Production">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="scheduleDate">Tanggal *</label>
+                        <input type="date" id="scheduleDate" name="scheduled_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startTime">Waktu Mulai *</label>
+                        <input type="time" id="startTime" name="start_time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">Waktu Selesai *</label>
+                        <input type="time" id="endTime" name="end_time" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="room">Ruangan *</label>
+                        <input type="text" id="room" name="room" required placeholder="Contoh: Training Room A">
+                    </div>
+                    <div class="form-group">
+                        <label for="trainer">Trainer *</label>
+                        <input type="text" id="trainer" name="trainer" required placeholder="Nama Trainer">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxParticipants">Maks. Peserta</label>
+                        <input type="number" id="maxParticipants" name="max_participants" min="1" max="50" value="20">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Deskripsi</label>
+                    <textarea id="description" name="description" rows="3" placeholder="Deskripsi tambahan (opsional)"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelScheduleBtn">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="saveScheduleBtn">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Batch Management Modal -->
+    <div id="batchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Kelola Batch Training</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="batch-content">
+                <div class="batch-list">
+                    <h4>Batch Aktif</h4>
+                    <div id="activeBatches" class="batch-cards">
+                        <!-- Batch cards akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+                <div class="batch-form">
+                    <h4>Buat Batch Baru</h4>
+                    <form id="batchForm">
+                        <div class="form-group">
+                            <label for="newBatchName">Nama Batch</label>
+                            <input type="text" id="newBatchName" name="batch_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="batchSection">Section</label>
+                            <select id="batchSection" name="section">
+                                <option value="">Pilih Section</option>
+                                <option value="Production">Production</option>
+                                <option value="Quality">Quality</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="HR">HR</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Buat Batch</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Assignment Modal -->
+    <div id="participantModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Kelola Peserta - <span id="participantScheduleTitle"></span></h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="participant-content">
+                <div class="available-participants">
+                    <h4>MP Tersedia</h4>
+                    <div class="search-box">
+                        <input type="text" id="participantSearch" placeholder="Cari NPK atau Nama...">
+                    </div>
+                    <div id="availableList" class="participant-list">
+                        <!-- Available participants akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+                <div class="assigned-participants">
+                    <h4>Peserta Terdaftar</h4>
+                    <div id="assignedList" class="participant-list">
+                        <!-- Assigned participants akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeParticipantModal()">Tutup</button>
+                <button type="button" class="btn btn-primary" onclick="saveParticipants()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/schedule.js"></script>
+</body>
+</html>

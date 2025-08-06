@@ -1,0 +1,141 @@
+/* Universal Top Bar Styles - Compact Version */
+.header {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+    color: white !important;
+    padding: 1rem 0 !important; /* Dikurangi dari 1.5rem ke 1rem */
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15) !important; /* Shadow lebih halus */
+    border-bottom: 1px solid #bfdbfe !important;
+    position: relative;
+    z-index: 100;
+}
+
+.header-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 1.5rem !important; /* Dikurangi dari 2rem ke 1.5rem */
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.header h1 {
+    font-size: 1.6rem !important; /* Dikurangi dari 2rem ke 1.6rem */
+    font-weight: 600 !important;
+    color: white !important;
+    margin: 0 !important;
+}
+
+.header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important; /* Dikurangi dari 1rem ke 0.75rem */
+    flex-wrap: wrap !important;
+}
+
+/* Override Bootstrap btn-outline-light untuk konsistensi - Compact */
+.header .btn-outline-light,
+.header .btn {
+    background: white !important;
+    color: #3b82f6 !important;
+    border: 1px solid white !important;
+    padding: 0.5rem 1rem !important; /* Dikurangi dari 0.75rem 1.5rem */
+    border-radius: 6px !important; /* Dikurangi dari 8px ke 6px */
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important; /* Dikurangi dari 0.95rem ke 0.85rem */
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08) !important; /* Shadow lebih halus */
+}
+
+.header .btn-outline-light:hover,
+.header .btn:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #2563eb !important;
+    border-color: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important; /* Shadow hover lebih halus */
+}
+
+.user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important; /* Dikurangi dari 1rem ke 0.75rem */
+    margin-left: 0.75rem !important; /* Dikurangi dari 1rem */
+    padding-left: 0.75rem !important; /* Dikurangi dari 1rem */
+    border-left: 1px solid rgba(255, 255, 255, 0.3) !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important; /* Tambahkan ukuran font lebih kecil */
+}
+
+.user-info span {
+    color: white !important;
+}
+
+.role-badge {
+    background: rgba(255, 255, 255, 0.2) !important;
+    padding: 0.2rem 0.6rem !important; /* Dikurangi dari 0.25rem 0.75rem */
+    border-radius: 10px !important; /* Dikurangi dari 12px */
+    font-size: 0.75rem !important; /* Dikurangi dari 0.8rem */
+    font-weight: 600 !important;
+}
+
+/* Icon spacing - lebih compact */
+.header .btn i {
+    margin-right: 0.4rem !important; /* Dikurangi spacing icon */
+}
+
+/* Responsive Design - Compact */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 0.75rem; /* Dikurangi dari 1rem */
+        padding: 0 1rem;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem; /* Dikurangi dari 1.5rem */
+    }
+    
+    .header-actions {
+        justify-content: center;
+        gap: 0.5rem; /* Dikurangi spacing */
+    }
+    
+    .header-actions .btn {
+        padding: 0.4rem 0.8rem; /* Lebih compact di mobile */
+        font-size: 0.8rem;
+    }
+    
+    .user-info {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        padding-top: 0.75rem; /* Dikurangi dari 1rem */
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0.75rem 0 !important; /* Lebih compact di mobile kecil */
+    }
+    
+    .header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .header-actions .btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.75rem;
+    }
+    
+    .header .btn i {
+        margin-right: 0.3rem !important;
+    }
+}
